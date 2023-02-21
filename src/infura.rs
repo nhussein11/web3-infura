@@ -7,6 +7,6 @@ pub mod infura {
 
     pub async fn connect_to_infura(ws_url: &String) -> Result<Web3<WebSocket>> {
        let websocket = WebSocket::new(ws_url).await?;
-        Ok(web3::Web3::new(websocket))
+        Ok(Web3::new(websocket))
     }
 }
