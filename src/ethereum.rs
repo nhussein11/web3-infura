@@ -6,6 +6,8 @@ pub mod ethereum {
         Transport, Web3,
     };
 
+    use num_format::{Locale, ToFormattedString};
+
     pub async fn get_eth_balance<T: Transport>(transport: Web3<T>, account_address: &String) -> () {
         let account: H160 = H160::from_str(account_address).unwrap();
 
@@ -19,7 +21,9 @@ pub mod ethereum {
     }
 
     pub async fn get_eth_blocknumber<T: Transport>(transport: Web3<T>) -> () {
-        let block_number = transport.eth().block_number().await.unwrap();
+        let block_number = transport.eth().block_number().await.unwrap()
+            .as_u64()
+            .to_formatted_string(&Locale::es_AR);
         println!("ETH block number: {}", block_number);
     }
 
