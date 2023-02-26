@@ -1,7 +1,8 @@
 pub mod ethereum {
     use std::convert::TryInto;
     use std::fmt::Display;
-    use std::{ops::Div, str::FromStr};
+    use std::str::FromStr;
+
     use web3::{
         types::{H160, U256},
         Transport, Web3,
@@ -40,7 +41,6 @@ pub mod ethereum {
         let wei_conv: U256 = U256::exp10(9);
         wei.checked_div(wei_conv).unwrap()
     }
-
     fn format_unit_integer<T: TryInto<u64> + Display + Copy>(integer: T) -> String {
         match integer.try_into() {
             Ok(n) => n.to_formatted_string(&Locale::es_AR),
