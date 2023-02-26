@@ -1,5 +1,5 @@
 pub mod ethereum {
-    use std::{ops::Div, string::ToString, fmt::Display};
+    use std::{ops::Div, str::FromStr};
 
     use web3::{
         types::{H160, U256},
@@ -15,18 +15,13 @@ pub mod ethereum {
         let account: H160 = H160::from_str(account_address).unwrap();
 
         let balance = transport.eth().balance(account, None).await.unwrap();
-        let balance = wei_to_eth(balance);
-        println!("Balance: {} [ETH]", format_eth(balance));
+        let converted_balance = wei_to_eth(balance);
+        println!("Balance: {} [ETH]", format_unit_integer(converted_balance));
     }
 
     pub async fn get_eth_blocknumber<T: Transport>(transport: &Web3<T>) -> () {
-        let block_number = transport
-            .eth()
-            .block_number()
-            .await
-            .unwrap()
-            .as_u64()
-            .to_formatted_string(&Locale::es_AR);
+        let block_number = transport.eth().block_number().await.unwrap();
+        // let block_number_formatted = format_unit_integer(block_number);
         println!("Block number: {}", block_number);
     }
 
@@ -44,12 +39,12 @@ pub mod ethereum {
         let wei_conv: U256 = U256::exp10(9);
         wei.checked_div(wei_conv).unwrap()
     }
-    fn format_eth(eth: U256) -> String {
-        eth.as_u64().to_formatted_string(&Locale::es_AR)
+    
+    fn format_unit_integer<T>(value: T) -> String
+    where
+        T: Into<U256>,
+    {
+        let integer: U256 = value.into();
+        integer.as_u64().to_formatted_string(&Locale::es_AR)
     }
-
-    // TODO: make format_eth generic
-    // fn format_eth<T>(eth: T) -> String where T: Display + ToString {
-        // eth.to_string().as_u64().to_formatted_string(&Locale::es_AR)
-    // }
 }

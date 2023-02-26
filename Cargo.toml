@@ -8,5 +8,6 @@ edition = "2021"
 [dependencies]
 dotenv = "0.15.0"
 num-format = "0.4.4"
+num-traits = "0.2.15"
 tokio = "1.25.0"
 web3 = "0.18.0"
