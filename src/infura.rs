@@ -1,30 +1,50 @@
 pub mod infura {
     use web3::{
         transports::{Http, WebSocket},
-        Result, Transport, Web3,
+        Transport, Web3,
     };
 
-    pub struct Web3Builder {
-        transport: Box<dyn Transport>,
+    pub struct TransportBuilder<T: Transport> {
+        transport: T,
     }
 
-    impl Web3Builder {
-        pub fn new(transport: Box<dyn Transport>) -> Self {
-            Self { transport }
+    impl<T: Transport> TransportBuilder<T> {
+        pub fn new(transport: T) -> Self {
+            TransportBuilder { transport }
         }
 
-        pub fn build(self) -> Web3<Self::Transport> {
+        pub fn build(self) -> Web3<T> {
             Web3::new(self.transport)
         }
     }
 
-    pub async fn connect_to_infura_by_websocket(ws_url: &String) -> Result<Web3<WebSocket>> {
-        let websocket = WebSocket::new(ws_url).await?;
-        Ok(Web3::new(websocket))
+    pub struct WebSocketBuilder {
+        url: String,
     }
 
-    pub async fn connect_to_infura_by_http(http_url: &String) -> Result<Web3<Http>> {
-        let http = Http::new(http_url)?;
-        Ok(Web3::new(http))
+    impl WebSocketBuilder {
+        pub fn new(url: String) -> Self {
+            WebSocketBuilder { url }
+        }
+
+        pub async fn build(self) -> Web3<WebSocket> {
+            let transport = WebSocket::new(&self.url).await.unwrap();
+            TransportBuilder::new(transport).build()
+        }
+    }
+
+    pub struct HttpBuilder {
+        url: String,
+    }
+
+    impl HttpBuilder {
+        pub fn new(url: String) -> Self {
+            HttpBuilder { url }
+        }
+
+        pub fn build(self) -> Web3<Http> {
+            let transport = Http::new(&self.url).unwrap();
+            TransportBuilder::new(transport).build()
+        }
     }
 }
