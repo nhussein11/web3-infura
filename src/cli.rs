@@ -38,7 +38,7 @@ pub mod cli {
         pub address: String,
     }
 
-    pub async fn run_cli(api_key: &String) -> () {
+    pub async fn run_cli(api_key: &String) {
         let http_url = format!("https://mainnet.infura.io/v3/{}", api_key);
         let web3s = HttpBuilder::new(http_url).build();
 
