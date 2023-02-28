@@ -7,20 +7,23 @@ pub mod cli {
 
     use infura::infura::{HttpBuilder, WebSocketBuilder};
 
-    use clap::Parser;
+    use clap::{Parser, ValueEnum};
+    use web3::{Transport as Web3TransportEnum, Web3};
 
     #[derive(Parser, Debug)]
     #[clap(version = "1.0", author = "Author Name")]
     pub struct Commands {
+        #[clap(value_enum, default_value = "http")]
+        pub transport: Transport,
+
         #[clap(subcommand)]
         pub ethereum_subcommands: EthereumSubcommands,
     }
-
-    // #[derive(Parser, Debug)]
-    // pub enum BlockchainSubcommands {
-    //     #[clap(version = "1.0", author = "Author Name")]
-    //     Ethereum(EthereumSubcommands),
-    // }
+    #[derive(clap::ValueEnum, Debug, Clone)]
+    pub enum Transport {
+        Http = 1,
+        WebSocket = 2,
+    }
 
     #[derive(Parser, Debug)]
     pub enum EthereumSubcommands {
@@ -39,15 +42,26 @@ pub mod cli {
     }
 
     pub async fn run_cli(api_key: &String) {
-        let http_url = format!("https://mainnet.infura.io/v3/{}", api_key);
-        let web3s = HttpBuilder::new(http_url).build();
-
-        // let wss_url = format!("wss://mainnet.infura.io/ws/v3/{}", api_key);
-        // let web3s = WebSocketBuilder::new(wss_url).build().await;
-
         let args = Commands::parse();
         println!("{:?}", args);
 
+        println!("Transport: {:?}", args.transport);
+
+        let selected_transport: Web3<web3::transports>  = match args.transport {
+            Transport::Http => {
+                let http_url = format!("https://mainnet.infura.io/v3/{}", api_key);
+                let web3s = HttpBuilder::new(http_url).build();
+                web3s
+            }
+            Transport::WebSocket => {
+                let ws_url = format!("wss://mainnet.infura.io/ws/v3/{}", api_key);
+                let web3s = WebSocketBuilder::new(ws_url).build().await;
+                web3s
+            }
+        };
+
+        let http_url = format!("https://mainnet.infura.io/v3/{}", api_key);
+        let web3s = HttpBuilder::new(http_url).build();
         match args.ethereum_subcommands {
             EthereumSubcommands::Balance(balance) => {
                 get_eth_balance(&web3s, &balance.address).await;

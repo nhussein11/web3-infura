@@ -27,7 +27,7 @@ pub mod infura {
             WebSocketBuilder { url }
         }
 
-        pub async fn build(self) -> Web3<WebSocket> {
+        pub  async fn build(self) -> Web3<WebSocket> {
             let transport = WebSocket::new(&self.url).await.unwrap();
             TransportBuilder::new(transport).build()
         }
