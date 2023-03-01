@@ -1,7 +1,6 @@
 // Unit tests
 #[cfg(test)]
 mod tests {
-    use super::*;
     use std::process::Command;
 
     #[test]
@@ -80,6 +79,39 @@ mod tests {
             .arg("run")
             .arg("--")
             .arg("web-socket")
+            .arg("balance")
+            // Use invalid argument (use "addres" instead of "address")
+            .arg("--addres")
+            .arg("0x71C7656EC7ab88b098defB751B7401B5f6d8976F");
+
+        let output = command.output().unwrap();
+        assert!(!output.status.success());
+    }
+
+    #[test]
+    fn get_balance_using_http() {
+        let mut binding = Command::new("cargo");
+
+        let command = binding
+            .arg("run")
+            .arg("--")
+            .arg("http")
+            .arg("balance")
+            .arg("--address")
+            .arg("0x71C7656EC7ab88b098defB751B7401B5f6d8976F");
+
+        let output = command.output().unwrap();
+        assert!(output.status.success());
+    }
+
+    #[test]
+    fn try_to_get_balance_using_http() {
+        let mut binding = Command::new("cargo");
+
+        let command = binding
+            .arg("run")
+            .arg("--")
+            .arg("http")
             .arg("balance")
             // Use invalid argument (use "addres" instead of "address")
             .arg("--addres")
