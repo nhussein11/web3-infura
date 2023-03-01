@@ -120,4 +120,33 @@ mod tests {
         let output = command.output().unwrap();
         assert!(!output.status.success());
     }
+
+    #[test]
+    fn get_block_number_using_ws() {
+        let mut binding = Command::new("cargo");
+
+        let command = binding
+            .arg("run")
+            .arg("--")
+            .arg("web-socket")
+            .arg("block-number");
+
+        let output = command.output().unwrap();
+        assert!(output.status.success());
+    }
+
+    #[test]
+    fn try_to_get_block_number_using_ws() {
+        let mut binding = Command::new("cargo");
+
+        let command = binding
+            .arg("run")
+            .arg("--")
+            .arg("web-socket")
+            // Use invalid argument (use "block-numbe" instead of "block-number")
+            .arg("block-numbe");
+
+        let output = command.output().unwrap();
+        assert!(!output.status.success());
+    }
 }
