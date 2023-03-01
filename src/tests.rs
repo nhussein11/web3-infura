@@ -49,7 +49,7 @@ mod tests {
             .arg("run")
             .arg("--")
             .arg("http")
-            // Use invalid argument
+            // Use invalid argument (use "gas-pri" instead of "gas-price")
             .arg("gas-pri");
 
         let output = command.output().unwrap();
@@ -81,7 +81,7 @@ mod tests {
             .arg("--")
             .arg("web-socket")
             .arg("balance")
-            // Use invalid argument
+            // Use invalid argument (use "addres" instead of "address")
             .arg("--addres")
             .arg("0x71C7656EC7ab88b098defB751B7401B5f6d8976F");
 
