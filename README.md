@@ -4,7 +4,16 @@ This project is a simple example of how to use Infura to connect to the Ethereum
 
 As it is a simple example, I added only some of the available methods in the Infura API. You can find the full list of the available methods [here](https://docs.infura.io/infura/networks/ethereum/json-rpc-methods).
 
-I also want to mention that this project is not a library, it is just a simple CLI that uses the Infura API to get some information about the Ethereum blockchain. If I have time, I will add more features to this project. My idea is to use the CLI to get information not only about the Ethereum blockchain but also about other blockchains available on Infura.
+### Why did I create this project?
+The main reason is that I wanted to learn more about Rust and I thought that creating a CLI to get information about the Ethereum blockchain would be a good idea. I also wanted to learn more about the Rust ecosystem and how to use some of the available crates. I used the following crates in this project:
+- [clap](https://crates.io/crates/clap): to parse the CLI arguments
+- [dotenv](https://crates.io/crates/dotenv): to load the environment variables from the .env file
+- [tokio](https://crates.io/crates/tokio): to make HTTP requests
+- [web3](https://crates.io/crates/web3): to connect to the Ethereum blockchain
+- [num-format](https://crates.io/crates/num-format): to format the numbers
+
+### What's next?
+If I have more time, I will add more features to this project. My idea is to use the CLI to get information not only about the Ethereum blockchain but also about other blockchains available on Infura, that's why I separated the project into different modules, so it will be easier to add more features. For example, I want to add a module that will allow me to get information about the Near blockchain, so I will create a new module called `near` and I will add the necessary code to get information about the Near blockchain there.
 
 Having that in mind, if you want to contribute to this project, you are more than welcome. You can add more features to the CLI or you can suggest some ideas for new features.
 
