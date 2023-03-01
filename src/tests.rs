@@ -149,4 +149,29 @@ mod tests {
         let output = command.output().unwrap();
         assert!(!output.status.success());
     }
+
+    #[test]
+    fn get_block_number_using_http() {
+        let mut binding = Command::new("cargo");
+
+        let command = binding.arg("run").arg("--").arg("http").arg("block-number");
+
+        let output = command.output().unwrap();
+        assert!(output.status.success());
+    }
+
+    #[test]
+    fn try_to_get_block_number_using_http() {
+        let mut binding = Command::new("cargo");
+
+        let command = binding
+            .arg("run")
+            .arg("--")
+            .arg("http")
+            // Use invalid argument (use "block-numbe" instead of "block-number")
+            .arg("block-numbe");
+
+        let output = command.output().unwrap();
+        assert!(!output.status.success());
+    }
 }
