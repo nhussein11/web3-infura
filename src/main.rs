@@ -3,7 +3,6 @@ pub mod ethereum;
 pub mod infura;
 
 use std::env;
-
 use cli::cli::run_cli;
 
 #[tokio::main]

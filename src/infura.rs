@@ -41,6 +41,7 @@ pub mod infura {
         pub fn new(url: String) -> Self {
             HttpBuilder { url }
         }
+
         pub fn build(self) -> Web3<Http> {
             let transport = Http::new(&self.url).unwrap();
             TransportBuilder::new(transport).build()

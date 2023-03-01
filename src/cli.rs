@@ -1,11 +1,8 @@
 pub mod cli {
-
     use crate::{
         ethereum::ethereum::{get_eth_balance, get_eth_blocknumber, get_eth_gasprice},
-        infura,
+        infura::infura::{HttpBuilder, WebSocketBuilder},
     };
-
-    use infura::infura::{HttpBuilder, WebSocketBuilder};
 
     use clap::Parser;
     use web3::{Transport as Web3Transport, Web3};
