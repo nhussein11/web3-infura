@@ -12,8 +12,10 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: INFURA_API_KEY
+    # environment: INFURA_API_KEY
     steps:
+      - env:
+          INFURA_API_KEY: ${{ secrets.INFURA_API_KEY }}
       - uses: actions/checkout@v3
       - name: Build
         run: cargo build --verbose
