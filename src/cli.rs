@@ -11,7 +11,7 @@ pub mod cli {
     use web3::{transports, Transport as Web3Transport, Web3};
 
     #[derive(Parser, Debug)]
-    #[clap(version = "1.0", author = "Author Name")]
+    #[clap(version = "1.0", author = "nhussein11")]
     pub struct Commands {
         #[clap(value_enum, default_value = "http")]
         pub transport: Transport,
@@ -27,11 +27,11 @@ pub mod cli {
 
     #[derive(Parser, Debug)]
     pub enum EthereumSubcommands {
-        #[clap(version = "1.0", author = "Author Name")]
+        #[clap(version = "1.0", author = "nhussein11")]
         Balance(Balance),
-        #[clap(version = "1.0", author = "Author Name")]
+        #[clap(version = "1.0", author = "nhussein11")]
         BlockNumber,
-        #[clap(version = "1.0", author = "Author Name")]
+        #[clap(version = "1.0", author = "nhussein11")]
         GasPrice,
     }
 
