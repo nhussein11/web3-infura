@@ -8,7 +8,7 @@ pub mod cli {
     use infura::infura::{HttpBuilder, WebSocketBuilder};
 
     use clap::Parser;
-    use web3::{transports, Transport as Web3Transport, Web3};
+    use web3::{Transport as Web3Transport, Web3};
 
     #[derive(Parser, Debug)]
     #[clap(version = "1.0", author = "nhussein11")]

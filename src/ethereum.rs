@@ -10,9 +10,8 @@ pub mod ethereum {
 
     use num_format::{Locale, ToFormattedString};
 
-    pub async fn get_eth_balance<T: Transport>(transport: &Web3<T>, account_address: &String) {
+    pub async fn get_eth_balance<T: Transport>(transport: &Web3<T>, account_address: &str) {
         let account: H160 = H160::from_str(account_address).unwrap();
-
         let balance = transport.eth().balance(account, None).await.unwrap();
         let converted_balance = wei_to_eth(balance);
         println!("Balance: {} [ETH]", format_unit_integer(converted_balance));
