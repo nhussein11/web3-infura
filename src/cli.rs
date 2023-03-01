@@ -5,10 +5,10 @@ pub mod cli {
         infura,
     };
 
-    use infura::infura::{ConnectionBuilder, HttpBuilder, WebSocketBuilder};
+    use infura::infura::{HttpBuilder, WebSocketBuilder};
 
     use clap::Parser;
-    use web3::{transports, Transport as Web3TransportEnum, Web3};
+    use web3::{transports, Transport, Web3};
 
     #[derive(Parser, Debug)]
     #[clap(version = "1.0", author = "Author Name")]
@@ -44,30 +44,22 @@ pub mod cli {
     pub async fn run_cli(api_key: &String) {
         let args = Commands::parse();
 
-        // if args.transport == MyTransport::Http {
-        //     let http_url = format!("https://mainnet.infura.io/v3/{}", api_key);
-        //     let web3s = HttpBuilder::new(http_url).build();
-        // } else {
-        //     let ws_url = format!("wss://mainnet.infura.io/ws/v3/{}", api_key);
-        //     let web3s = WebSocketBuilder::new(ws_url).build().await;
-        // }
+        match args.transport {
+            MyTransport::Http => {
+                let http_url = format!("https://mainnet.infura.io/v3/{}", api_key);
+                let web3s = HttpBuilder::new(http_url).build();
+                run_ethereum_subcommands(args.ethereum_subcommands, &web3s).await;
+            }
+            MyTransport::WebSocket => {
+                let ws_url = format!("wss://mainnet.infura.io/ws/v3/{}", api_key);
+                let web3s = WebSocketBuilder::new(ws_url).build().await;
+                run_ethereum_subcommands(args.ethereum_subcommands, &web3s).await;
+            }
+        }
+    }
 
-        // let web3s = match args.transport {
-        //     MyTransport::Http => {
-        //         let http_url = format!("https://mainnet.infura.io/v3/{}", api_key);
-        //         let web3s = HttpBuilder::new(http_url).build();
-        //         Box::new(web3s)
-        //     }
-        //     MyTransport::WebSocket => {
-        //         let ws_url = format!("wss://mainnet.infura.io/ws/v3/{}", api_key);
-        //         let web3s = WebSocketBuilder::new(ws_url).build().await;
-        //         Box::new(web3s)
-        //     }
-        // };
-
-        let http_url = format!("https://mainnet.infura.io/v3/{}", api_key);
-        let web3s = HttpBuilder::new(http_url).build();
-        match args.ethereum_subcommands {
+    async fn run_ethereum_subcommands<T: Transport>(args: EthereumSubcommands, web3s: &Web3<T>) {
+        match args {
             EthereumSubcommands::Balance(balance) => {
                 get_eth_balance(&web3s, &balance.address).await;
             }

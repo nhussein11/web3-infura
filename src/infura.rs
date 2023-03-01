@@ -18,11 +18,6 @@ pub mod infura {
         }
     }
 
-    pub trait ConnectionBuilder<T: Transport> {
-        fn new(url: String) -> Self;
-        fn build(self) -> Web3<T>;
-    }
-
     pub struct WebSocketBuilder {
         url: String,
     }
@@ -42,11 +37,11 @@ pub mod infura {
         url: String,
     }
 
-    impl ConnectionBuilder<Http> for HttpBuilder {
-        fn new(url: String) -> Self {
+    impl HttpBuilder {
+        pub fn new(url: String) -> Self {
             HttpBuilder { url }
         }
-        fn build(self) -> Web3<Http> {
+        pub fn build(self) -> Web3<Http> {
             let transport = Http::new(&self.url).unwrap();
             TransportBuilder::new(transport).build()
         }
