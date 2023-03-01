@@ -10,6 +10,9 @@ pub mod ethereum {
 
     use num_format::{Locale, ToFormattedString};
 
+    pub const ETH_HTTP_URL: &str = "https://mainnet.infura.io/v3/";
+    pub const ETH_WS_URL: &str = "wss://mainnet.infura.io/ws/v3/";
+
     pub async fn get_eth_balance<T: Transport>(transport: &Web3<T>, account_address: &str) {
         let account: H160 = H160::from_str(account_address).unwrap();
         let balance = transport.eth().balance(account, None).await.unwrap();

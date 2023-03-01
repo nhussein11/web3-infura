@@ -1,6 +1,7 @@
 mod cli;
-pub mod ethereum;
-pub mod infura;
+mod tests; 
+mod ethereum;
+mod infura;
 
 use std::env;
 use cli::cli::run_cli;

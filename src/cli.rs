@@ -1,6 +1,8 @@
 pub mod cli {
     use crate::{
-        ethereum::ethereum::{get_eth_balance, get_eth_blocknumber, get_eth_gasprice},
+        ethereum::ethereum::{
+            get_eth_balance, get_eth_blocknumber, get_eth_gasprice, ETH_HTTP_URL, ETH_WS_URL,
+        },
         infura::infura::{HttpBuilder, WebSocketBuilder},
     };
 
@@ -43,19 +45,22 @@ pub mod cli {
 
         match args.transport {
             Transport::Http => {
-                let http_url = format!("https://mainnet.infura.io/v3/{}", api_key);
+                let http_url = format!("{}{}", ETH_HTTP_URL, api_key);
                 let web3s = HttpBuilder::new(http_url).build();
                 run_ethereum_subcommands(args.ethereum_subcommands, &web3s).await;
             }
             Transport::WebSocket => {
-                let ws_url = format!("wss://mainnet.infura.io/ws/v3/{}", api_key);
+                let ws_url = format!("{}{}", ETH_WS_URL, api_key);
                 let web3s = WebSocketBuilder::new(ws_url).build().await;
                 run_ethereum_subcommands(args.ethereum_subcommands, &web3s).await;
             }
         }
     }
 
-    async fn run_ethereum_subcommands<T: Web3Transport>(args: EthereumSubcommands, web3s: &Web3<T>) {
+    async fn run_ethereum_subcommands<T: Web3Transport>(
+        args: EthereumSubcommands,
+        web3s: &Web3<T>,
+    ) {
         match args {
             EthereumSubcommands::Balance(balance) => {
                 get_eth_balance(&web3s, &balance.address).await;
