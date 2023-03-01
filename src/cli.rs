@@ -18,8 +18,8 @@ pub mod cli {
     }
     #[derive(clap::ValueEnum, Debug, Clone, PartialEq)]
     pub enum Transport {
-        Http = 1,
-        WebSocket = 2,
+        Http,
+        WebSocket,
     }
 
     #[derive(Parser, Debug)]
