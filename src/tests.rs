@@ -1,11 +1,14 @@
 #[cfg(test)]
 mod tests {
     use web3::error::TransportError;
-    use web3::{Error};
+    use web3::Error;
 
-    use crate::ethereum::ethereum::{get_eth_balance, ETH_HTTP_URL, get_eth_blocknumber, get_eth_gasprice};
+    use crate::ethereum::ethereum::{
+        get_eth_balance, get_eth_blocknumber, get_eth_gasprice, ETH_HTTP_URL,
+    };
     use crate::infura::infura::HttpBuilder;
     use std::env;
+
     #[tokio::test]
     async fn get_ethereum_balance() {
         let address = "0x71C7656EC7ab88b098defB751B7401B5f6d8976F";
@@ -30,7 +33,8 @@ mod tests {
         let web3s = HttpBuilder::new(http_url).build();
 
         let eth_balance = get_eth_balance(&web3s, &address).await.unwrap_err();
-        let expected_error: Error = Error::InvalidResponse(r#"Invalid account address"#.to_string());
+        let expected_error: Error =
+            Error::InvalidResponse(r#"Invalid account address"#.to_string());
 
         assert!(matches!(eth_balance, expected_error));
     }
@@ -43,10 +47,10 @@ mod tests {
         let web3s = HttpBuilder::new(http_url.to_string()).build();
 
         let eth_balance = get_eth_balance(&web3s, &address).await.unwrap_err();
-        
+
         let transport_error_expected_code = TransportError::Code(401);
         let expected_error: Error = Error::Transport(transport_error_expected_code);
-        
+
         assert!(matches!(expected_error, eth_balance)); // TODO: check this line
     }
 
@@ -101,5 +105,3 @@ mod tests {
         assert!(matches!(expected_error, gas_price)); // TODO: check this line
     }
 }
-
-
