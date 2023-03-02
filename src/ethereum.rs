@@ -13,11 +13,14 @@ pub mod ethereum {
     pub const ETH_HTTP_URL: &str = "https://mainnet.infura.io/v3/";
     pub const ETH_WS_URL: &str = "wss://mainnet.infura.io/ws/v3/";
 
-    pub async fn get_eth_balance<T: Transport>(transport: &Web3<T>, account_address: &str) {
+    pub async fn get_eth_balance<T: Transport>(transport: &Web3<T>, account_address: &str) -> String
+
+    {
         let account: H160 = H160::from_str(account_address).unwrap();
         let balance = transport.eth().balance(account, None).await.unwrap();
         let converted_balance = wei_to_eth(balance);
         println!("Balance: {} [ETH]", format_unit_integer(converted_balance));
+        format_unit_integer(converted_balance)
     }
 
     pub async fn get_eth_blocknumber<T: Transport>(transport: &Web3<T>) {
