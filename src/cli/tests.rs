@@ -1,4 +1,9 @@
-// Cli unit test
+/*
+I'm aware that is not a good practice to do this kind of "unit tests" (spawing subprocess and
+checking the output), but I'm doing this just to learn how to do it.
+
+The idea is to have a test for each command, just showing that the command is working.
+*/
 #[cfg(test)]
 mod tests {
     use std::process::Command;
