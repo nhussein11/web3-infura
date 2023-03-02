@@ -1,10 +1,10 @@
-mod cli;
 mod tests; 
 mod ethereum;
 mod infura;
+#[path = "cli/cli.rs"] mod cli;
+use crate::cli::cli::run_cli;
 
 use std::env;
-use cli::cli::run_cli;
 
 #[tokio::main]
 async fn main() -> web3::Result<()> {
