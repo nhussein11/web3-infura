@@ -23,4 +23,19 @@ mod tests {
    async fn try_to_get_ethereum_balance() {
 
    }
+
+
+    use std::process::Command;
+
+    #[test]
+    fn get_gas_price_using_ws() {
+        let mut binding = Command::new("cargo");
+        let command = binding
+            .arg("run")
+            .arg("--")
+            .arg("web-socket")
+            .arg("gas-price");
+        let output = command.output().expect("failed to execute process");
+        assert!(output.status.success());
+    }
 }
