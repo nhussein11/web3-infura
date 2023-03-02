@@ -51,9 +51,18 @@ pub mod ethereum {
         }
     }
 
-    pub async fn get_eth_gasprice<T: Transport>(transport: &Web3<T>) {
-        let gas_price: U256 = transport.eth().gas_price().await.unwrap();
-        println!("Gas price: {} [GWEI]", wei_to_gwei(gas_price));
+    pub async fn get_eth_gasprice<T: Transport>(transport: &Web3<T>) -> Result<String, Error> {
+        let gas_price = transport.eth().gas_price().await;
+        match gas_price {
+            Ok(gas_price) => {
+                let gas_price_formatted = format_unit_integer(gas_price);
+                Ok(gas_price_formatted)
+            }
+            Err(e) => {
+                return Err(e);
+            }
+        }
+
     }
 
     // Helper functions

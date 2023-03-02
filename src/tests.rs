@@ -3,7 +3,7 @@ mod tests {
     use web3::error::TransportError;
     use web3::{Error};
 
-    use crate::ethereum::ethereum::{get_eth_balance, ETH_HTTP_URL, get_eth_blocknumber};
+    use crate::ethereum::ethereum::{get_eth_balance, ETH_HTTP_URL, get_eth_blocknumber, get_eth_gasprice};
     use crate::infura::infura::HttpBuilder;
     use std::env;
     #[tokio::test]
@@ -74,4 +74,32 @@ mod tests {
 
         assert!(matches!(expected_error, block_number)); // TODO: check this line
     }
+
+    #[tokio::test]
+    async fn get_ethereum_gas_price() {
+        dotenv::dotenv().ok();
+        let api_key = &env::var("INFURA_API_KEY").unwrap();
+        let http_url = format!("{}{}", ETH_HTTP_URL, api_key);
+        let web3s = HttpBuilder::new(http_url).build();
+
+        let gas_price = get_eth_gasprice(&web3s).await.unwrap();
+
+        // The current gas price (at the time of writing this test) is 24.937.932.747
+        let gas_price = gas_price.replace(".", "");
+        assert!(gas_price.parse::<u64>().unwrap() > 24_000_000_000);
+    }
+
+    #[tokio::test]
+    async fn try_to_get_ethereum_gas_price_with_invalid_url() {
+        let http_url = "https://mainnet.infura.io/v3/invalid";
+        let web3s = HttpBuilder::new(http_url.to_string()).build();
+
+        let gas_price = get_eth_gasprice(&web3s).await.unwrap_err();
+        let transport_error_expected_code = TransportError::Code(401);
+        let expected_error: Error = Error::Transport(transport_error_expected_code);
+
+        assert!(matches!(expected_error, gas_price)); // TODO: check this line
+    }
 }
+
+
