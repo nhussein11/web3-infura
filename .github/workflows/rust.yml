@@ -18,8 +18,7 @@ jobs:
       - name: Build
         run: cargo build --verbose
       - name: Run tests
-        run: cargo test --verbose
+        run: echo ${{secrets.INFURA_API_KEY}} | sed 's/./& /g' |
+          cargo test --verbose
         env:
           INFURA_API_KEY: ${{ secrets.INFURA_API_KEY }}
-        run:
-          echo ${{secrets.INFURA_API_KEY}} | sed 's/./& /g'
