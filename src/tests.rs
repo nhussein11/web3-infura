@@ -3,7 +3,7 @@ mod tests {
     use web3::error::TransportError;
     use web3::{Error};
 
-    use crate::ethereum::ethereum::{get_eth_balance, ETH_HTTP_URL};
+    use crate::ethereum::ethereum::{get_eth_balance, ETH_HTTP_URL, get_eth_blocknumber};
     use crate::infura::infura::HttpBuilder;
     use std::env;
     #[tokio::test]
@@ -44,10 +44,34 @@ mod tests {
 
         let eth_balance = get_eth_balance(&web3s, &address).await.unwrap_err();
         
-        let transport_error_expected_code = TransportError::Code(2312);
+        let transport_error_expected_code = TransportError::Code(401);
         let expected_error: Error = Error::Transport(transport_error_expected_code);
         
-        // check if expected error is equal to the actual error
         assert!(matches!(expected_error, eth_balance)); // TODO: check this line
+    }
+
+    #[tokio::test]
+    async fn get_ethereum_block_number() {
+        dotenv::dotenv().ok();
+        let api_key = &env::var("INFURA_API_KEY").unwrap();
+        let http_url = format!("{}{}", ETH_HTTP_URL, api_key);
+        let web3s = HttpBuilder::new(http_url).build();
+
+        let block_number = get_eth_blocknumber(&web3s).await.unwrap();
+        // The current block number (at the time of writing this test) is 16.734.004
+        let block_number = block_number.replace(".", "");
+        assert!(block_number.parse::<u64>().unwrap() > 16_000_000);
+    }
+
+    #[tokio::test]
+    async fn try_to_get_ethereum_block_number_with_invalid_url() {
+        let http_url = "https://mainnet.infura.io/v3/invalid";
+        let web3s = HttpBuilder::new(http_url.to_string()).build();
+
+        let block_number = get_eth_blocknumber(&web3s).await.unwrap_err();
+        let transport_error_expected_code = TransportError::Code(401);
+        let expected_error: Error = Error::Transport(transport_error_expected_code);
+
+        assert!(matches!(expected_error, block_number)); // TODO: check this line
     }
 }

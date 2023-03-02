@@ -1,11 +1,11 @@
 pub mod ethereum {
-    use std::{convert::TryInto};
+    use std::convert::TryInto;
     use std::fmt::Display;
     use std::str::FromStr;
 
     use web3::{
         types::{H160, U256},
-        Transport, Web3, Error,
+        Error, Transport, Web3,
     };
 
     use num_format::{Locale, ToFormattedString};
@@ -13,12 +13,15 @@ pub mod ethereum {
     pub const ETH_HTTP_URL: &str = "https://mainnet.infura.io/v3/";
     pub const ETH_WS_URL: &str = "wss://mainnet.infura.io/ws/v3/";
 
-    pub async fn get_eth_balance<T: Transport>(transport: &Web3<T>, account_address: &str) -> Result<String,Error  >
-
-    {
+    pub async fn get_eth_balance<T: Transport>(
+        transport: &Web3<T>,
+        account_address: &str,
+    ) -> Result<String, Error> {
         let account = H160::from_str(account_address);
         if account.is_err() {
-            return Err(Error::InvalidResponse("Invalid account address".to_string()));
+            return Err(Error::InvalidResponse(
+                "Invalid account address".to_string(),
+            ));
         }
         let account = account.unwrap();
 
@@ -30,15 +33,22 @@ pub mod ethereum {
                 Ok(format_unit_integer(converted_balance))
             }
             Err(e) => {
-            return Err(e);
+                return Err(e);
             }
         }
     }
 
-    pub async fn get_eth_blocknumber<T: Transport>(transport: &Web3<T>) {
-        let block_number = transport.eth().block_number().await.unwrap();
-        let block_number_formatted = format_unit_integer(block_number);
-        println!("Block number: {}", block_number_formatted);
+    pub async fn get_eth_blocknumber<T: Transport>(transport: &Web3<T>) -> Result<String, Error> {
+        let block_number = transport.eth().block_number().await;
+        match block_number {
+            Ok(block_number) => {
+                let block_number_formatted = format_unit_integer(block_number);
+                Ok(block_number_formatted)
+            }
+            Err(e) => {
+                return Err(e);
+            }
+        }
     }
 
     pub async fn get_eth_gasprice<T: Transport>(transport: &Web3<T>) {
