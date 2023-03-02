@@ -62,7 +62,6 @@ pub mod ethereum {
                 return Err(e);
             }
         }
-
     }
 
     // Helper functions
