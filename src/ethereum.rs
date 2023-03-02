@@ -1,11 +1,11 @@
 pub mod ethereum {
-    use std::convert::TryInto;
+    use std::{convert::TryInto};
     use std::fmt::Display;
     use std::str::FromStr;
 
     use web3::{
         types::{H160, U256},
-        Transport, Web3,
+        Transport, Web3, Error,
     };
 
     use num_format::{Locale, ToFormattedString};
@@ -13,14 +13,26 @@ pub mod ethereum {
     pub const ETH_HTTP_URL: &str = "https://mainnet.infura.io/v3/";
     pub const ETH_WS_URL: &str = "wss://mainnet.infura.io/ws/v3/";
 
-    pub async fn get_eth_balance<T: Transport>(transport: &Web3<T>, account_address: &str) -> String
+    pub async fn get_eth_balance<T: Transport>(transport: &Web3<T>, account_address: &str) -> Result<String,Error  >
 
     {
-        let account: H160 = H160::from_str(account_address).unwrap();
-        let balance = transport.eth().balance(account, None).await.unwrap();
-        let converted_balance = wei_to_eth(balance);
-        println!("Balance: {} [ETH]", format_unit_integer(converted_balance));
-        format_unit_integer(converted_balance)
+        let account = H160::from_str(account_address);
+        if account.is_err() {
+            return Err(Error::InvalidResponse("Invalid account address".to_string()));
+        }
+        let account = account.unwrap();
+
+        let balance = transport.eth().balance(account, None).await;
+        match balance {
+            Ok(balance) => {
+                let converted_balance = wei_to_eth(balance);
+                println!("Balance: {} [ETH]", format_unit_integer(converted_balance));
+                Ok(format_unit_integer(converted_balance))
+            }
+            Err(e) => {
+            return Err(e);
+            }
+        }
     }
 
     pub async fn get_eth_blocknumber<T: Transport>(transport: &Web3<T>) {
