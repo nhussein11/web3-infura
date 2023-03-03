@@ -5,7 +5,9 @@ This project is a simple example of how to use Infura to connect to the Ethereum
 As it is a simple example, I added only some of the available methods in the Infura API. You can find the full list of the available methods [here](https://docs.infura.io/infura/networks/ethereum/json-rpc-methods).
 
 ### Why did I create this project? :books:
+
 The main reason is that I wanted to learn more about Rust and I thought that creating a CLI to get information about the Ethereum blockchain would be a good idea. I also wanted to learn more about the Rust ecosystem and how to use some of the available crates. I used the following crates in this project:
+
 - [clap](https://crates.io/crates/clap): to parse the CLI arguments
 - [dotenv](https://crates.io/crates/dotenv): to load the environment variables from the .env file
 - [tokio](https://crates.io/crates/tokio): to make HTTP requests
@@ -13,9 +15,10 @@ The main reason is that I wanted to learn more about Rust and I thought that cre
 - [num-format](https://crates.io/crates/num-format): to format the numbers
 
 ### What's next? :100:
+
 If I have more time, I will add more features to this project. My idea is to use the CLI to get information not only about the Ethereum blockchain but also about other blockchains available on Infura, that's why I separated the project into different modules, so it will be easier to add more features. For example, I want to add a module that will allow me to get information about the Near blockchain, so I will create a new module called `near` and I will add the necessary code to get information about the Near blockchain there.
 
-Having that in mind, ***if you want to contribute to this project, you are more than welcome***. You can add more features to the CLI or you can suggest some ideas for new features.
+Having that in mind, **_if you want to contribute to this project, you are more than welcome_**. You can add more features to the CLI or you can suggest some ideas for new features.
 
 ## How to run :runner:
 
@@ -38,35 +41,55 @@ cargo run -- --help
 ```
 
 At the moment, the CLI only supports the following commands:
--  `balance` : get the balance of an address
--  `block-number`: get the latest block number
--  `get-price`: get the current price of Ether in USD
+
+- `balance` : get the balance of an address
+- `block-number`: get the latest block number
+- `get-price`: get the current price of Ether in USD
 
 This CLI also provides the option to specify the transport protocol. The default protocol is HTTP. You can also use WebSockets. To use WebSockets, you need to add the `web-socket` flag when running the CLI.
 
+## How to test :white_check_mark:
 
-### Examples :crab:
+I wrote some unit test for this project. It's important to mention that some tests, like the ones that depends on real time variation, are approachs in fact.
+
+- To run all of them, you just need to run the following command:
+
+```bash
+cargo test
+```
+
+- If you want to run a specific test, you can run the following command:
+
+```bash
+cargo test <test_name>
+```
+
+## Examples :crab:
 
 Let's see some examples:
+
 - Get the balance of the following address, using HTTP
+
 ```bash
 cargo run -- balance --address 0x71C7656EC7ab88b098defB751B7401B5f6d8976F
 ```
 
 - Get the balance of the following address, using WebSockets
+
 ```bash
-cargo run -- web-socket balance --address 0x71C7656EC7ab88b098defB751B7401B5f6d8976F 
+cargo run -- web-socket balance --address 0x71C7656EC7ab88b098defB751B7401B5f6d8976F
 ```
 
 - Get the latest block number, using HTTP
+
 ```bash
 cargo run -- block-number
 ```
 
 - Get the current gas price, using WebSockets
+
 ```bash
 cargo run -- web-socket gas-price
 ```
 
-
-And that's it. I hope you find this project useful. If you have any questions, feel free to contact me :rocket: 
+And that's it. I hope you find this project useful. If you have any questions, feel free to contact me :rocket:
