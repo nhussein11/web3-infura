@@ -24,13 +24,53 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn try_to_get_ethereum_balance_with_invalid_address_with_http() {
+        let address = "invalid address";
+
+        dotenv::dotenv().ok();
+        let api_key = &env::var("INFURA_API_KEY").unwrap();
+        let http_url = format!("{}{}", ETH_HTTP_URL, api_key);
+        let web3s = HttpBuilder::new(http_url).build();
+
+        let eth_balance = get_eth_balance(&web3s, &address).await.unwrap_err();
+        let expected_error_message: String = "Invalid account address".to_string();
+
+        match eth_balance {
+            Error::InvalidResponse(error) => {
+                assert_eq!(error, expected_error_message);
+            }
+            _ => unreachable!(),
+        }
+    }
+
+    #[tokio::test]
+    async fn try_to_get_ethereum_balance_with_invalid_address_with_wss() {
+        let address = "invalid address";
+
+        dotenv::dotenv().ok();
+        let api_key = &env::var("INFURA_API_KEY").unwrap();
+        let ws_url = format!("{}{}", ETH_WS_URL, api_key);
+        let web3s = WebSocketBuilder::new(ws_url).build().await.unwrap();
+
+        let eth_balance = get_eth_balance(&web3s, &address).await.unwrap_err();
+        let expected_error_message: String = "Invalid account address".to_string();
+
+        match eth_balance {
+            Error::InvalidResponse(error) => {
+                assert_eq!(error, expected_error_message);
+            }
+            _ => unreachable!(),
+        }
+    }
+
+    #[tokio::test]
     async fn get_ethereum_block_number() {
         dotenv::dotenv().ok();
         let api_key = &env::var("INFURA_API_KEY").unwrap();
         let http_url = format!("{}{}", ETH_HTTP_URL, api_key);
         let web3s = HttpBuilder::new(http_url).build();
 
-       let block_number = get_eth_blocknumber(&web3s).await.unwrap();
+        let block_number = get_eth_blocknumber(&web3s).await.unwrap();
         // The current block number (at the time of writing this test) is 16.734.004
         let block_number = block_number.replace(".", "");
         assert!(block_number.parse::<u64>().unwrap() > 16_000_000);
@@ -82,46 +122,4 @@ mod tests {
             _ => unreachable!(),
         }
     }
-
-
-    #[tokio::test]
-    async fn try_to_get_ethereum_balance_with_invalid_address_with_http() {
-        let address = "invalid address";
-
-        dotenv::dotenv().ok();
-        let api_key = &env::var("INFURA_API_KEY").unwrap();
-        let http_url = format!("{}{}", ETH_HTTP_URL, api_key);
-        let web3s = HttpBuilder::new(http_url).build();
-
-        let eth_balance = get_eth_balance(&web3s, &address).await.unwrap_err();
-        let expected_error_message: String = "Invalid account address".to_string();
-
-        match eth_balance {
-            Error::InvalidResponse(error) => {
-                assert_eq!(error, expected_error_message);
-            }
-            _ => unreachable!(),
-        }
-    }
-
-    #[tokio::test]
-    async fn try_to_get_ethereum_balance_with_invalid_address_with_wss(){
-        let address = "invalid address";
-
-        dotenv::dotenv().ok();
-        let api_key = &env::var("INFURA_API_KEY").unwrap();
-        let ws_url = format!("{}{}", ETH_WS_URL, api_key);
-        let web3s = WebSocketBuilder::new(ws_url).build().await.unwrap();
-
-        let eth_balance = get_eth_balance(&web3s, &address).await.unwrap_err();
-        let expected_error_message: String = "Invalid account address".to_string();
-
-        match eth_balance {
-            Error::InvalidResponse(error) => {
-                assert_eq!(error, expected_error_message);
-            }
-            _ => unreachable!(),
-        }
-    }
-
 }

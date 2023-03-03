@@ -32,9 +32,7 @@ pub mod ethereum {
                 println!("Balance: {} [ETH]", format_unit_integer(converted_balance));
                 Ok(format_unit_integer(converted_balance))
             }
-            Err(e) => {
-                return Err(e);
-            }
+            Err(e) => Err(e),
         }
     }
 
@@ -45,9 +43,7 @@ pub mod ethereum {
                 let block_number_formatted = format_unit_integer(block_number);
                 Ok(block_number_formatted)
             }
-            Err(e) => {
-                return Err(e);
-            }
+            Err(e) => Err(e),
         }
     }
 
@@ -58,9 +54,7 @@ pub mod ethereum {
                 let gas_price_formatted = format_unit_integer(gas_price);
                 Ok(gas_price_formatted)
             }
-            Err(e) => {
-                return Err(e);
-            }
+            Err(e) => Err(e),
         }
     }
 
@@ -69,6 +63,7 @@ pub mod ethereum {
         let wei_conv: U256 = U256::exp10(18);
         wei.checked_div(wei_conv).unwrap()
     }
+    #[allow(dead_code)]
     fn wei_to_gwei(wei: U256) -> U256 {
         let wei_conv: U256 = U256::exp10(9);
         wei.checked_div(wei_conv).unwrap()

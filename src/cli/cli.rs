@@ -52,8 +52,11 @@ pub mod cli {
             Transport::WebSocket => {
                 let ws_url = format!("{}{}", ETH_WS_URL, api_key);
                 // TODO: Handle error
-                let web3s = WebSocketBuilder::new(ws_url).build().await.unwrap();
-                run_ethereum_subcommands(args.ethereum_subcommands, &web3s).await;
+                let web3s = WebSocketBuilder::new(ws_url).build().await;
+                match web3s {
+                    Ok(web3s) => run_ethereum_subcommands(args.ethereum_subcommands, &web3s).await,
+                    Err(e) => println!("Error: {}", e),
+                }
             }
         }
     }
@@ -64,13 +67,13 @@ pub mod cli {
     ) {
         match args {
             EthereumSubcommands::Balance(balance) => {
-                get_eth_balance(&web3s, &balance.address).await;
+                get_eth_balance(web3s, &balance.address).await;
             }
             EthereumSubcommands::BlockNumber => {
-                get_eth_blocknumber(&web3s).await;
+                get_eth_blocknumber(web3s).await;
             }
             EthereumSubcommands::GasPrice => {
-                get_eth_gasprice(&web3s).await;
+                get_eth_gasprice(web3s).await;
             }
         };
     }
