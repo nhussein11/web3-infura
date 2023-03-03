@@ -83,6 +83,37 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn try_to_get_ethereum_block_number_with_invalid_http_url() {
+        let invalid_http_url = "https://mainnet.infura.io/v3/invalid".to_string();
+        let web3s = HttpBuilder::new(invalid_http_url).build();
+
+        let block_number = get_eth_blocknumber(&web3s).await.unwrap_err();
+        let transport_error_expected_code = TransportError::Code(401);
+        
+        match block_number {
+            Error::Transport(transport_error) => {
+                assert_eq!(transport_error_expected_code, transport_error);
+            }
+            _ => unreachable!(),
+        }
+    }
+
+    #[tokio::test]
+    async fn try_to_get_ethereum_block_number_with_invalid_ws_url() {
+        let invalid_ws_url = "wss://mainnet.infura.io/ws/v3/invalid".to_string();
+        let web3s = WebSocketBuilder::new(invalid_ws_url).build().await.unwrap_err();
+
+        let transport_error_expected_code = TransportError::Code(401);
+        
+        match web3s {
+            Error::Transport(transport_error) => {
+                assert_eq!(transport_error_expected_code, transport_error);
+            }
+            _ => unreachable!(),
+        }
+    }
+
+    #[tokio::test]
     async fn get_ethereum_gas_price() {
         dotenv::dotenv().ok();
         let api_key = &env::var("INFURA_API_KEY").unwrap();
@@ -97,7 +128,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn try_to_get_ethereum_gas_price_with_invalid_url_http() {
+    async fn try_to_get_ethereum_gas_price_with_invalid_http_url() {
         let invalid_http_url = "https://mainnet.infura.io/v3/invalid".to_string();
         let web3s = HttpBuilder::new(invalid_http_url).build();
 
@@ -113,7 +144,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn try_to_get_ethereum_gas_price_with_invalid_url_ws() {
+    async fn try_to_get_ethereum_gas_price_with_invalid_ws_url() {
         let invalid_ws_url = "wss://mainnet.infura.io/ws/v3/invalid".to_string();
         let web3s = WebSocketBuilder::new(invalid_ws_url).build().await.unwrap_err();
         
