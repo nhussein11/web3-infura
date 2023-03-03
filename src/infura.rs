@@ -1,7 +1,7 @@
 pub mod infura {
     use web3::{
         transports::{Http, WebSocket},
-        Transport, Web3,
+        Transport, Web3, Error,
     };
 
     pub struct TransportBuilder<T: Transport> {
@@ -27,9 +27,12 @@ pub mod infura {
             WebSocketBuilder { url }
         }
 
-        pub async fn build(self) -> Web3<WebSocket> {
-            let transport = WebSocket::new(&self.url).await.unwrap();
-            TransportBuilder::new(transport).build()
+        pub async fn build(self) -> Result<Web3<WebSocket>, Error> {
+            let transport = WebSocket::new(&self.url).await; 
+            match transport {
+                Ok(transport) => Ok(TransportBuilder::new(transport).build()),
+                Err(e) => Err(e),
+            }
         }
     }
 

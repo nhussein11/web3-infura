@@ -51,7 +51,8 @@ pub mod cli {
             }
             Transport::WebSocket => {
                 let ws_url = format!("{}{}", ETH_WS_URL, api_key);
-                let web3s = WebSocketBuilder::new(ws_url).build().await;
+                // TODO: Handle error
+                let web3s = WebSocketBuilder::new(ws_url).build().await.unwrap();
                 run_ethereum_subcommands(args.ethereum_subcommands, &web3s).await;
             }
         }

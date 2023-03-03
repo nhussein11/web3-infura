@@ -6,7 +6,7 @@ mod tests {
     use crate::ethereum::ethereum::{
         get_eth_balance, get_eth_blocknumber, get_eth_gasprice, ETH_HTTP_URL,
     };
-    use crate::infura::infura::HttpBuilder;
+    use crate::infura::infura::{HttpBuilder, WebSocketBuilder};
     use std::env;
 
     #[tokio::test]
@@ -98,33 +98,31 @@ mod tests {
 
     #[tokio::test]
     async fn try_to_get_ethereum_gas_price_with_invalid_url_http() {
-        let http_url = "https://mainnet.infura.io/v3/invalid";
-        let web3s = HttpBuilder::new(http_url.to_string()).build();
+        let invalid_http_url = "https://mainnet.infura.io/v3/invalid".to_string();
+        let web3s = HttpBuilder::new(invalid_http_url).build();
 
         let gas_price = get_eth_gasprice(&web3s).await.unwrap_err();
         let transport_error_expected_code = TransportError::Code(401);
-        let expected_error: Error = Error::Transport(transport_error_expected_code);
-
-        assert!(matches!(expected_error, gas_price)); // TODO: check this line
+        
+        match gas_price {
+            Error::Transport(transport_error) => {
+                assert_eq!(transport_error_expected_code, transport_error);
+            }
+            _ => unreachable!()
+        }
     }
 
     #[tokio::test]
     async fn try_to_get_ethereum_gas_price_with_invalid_url_ws() {
-        let ws_url = "wss://mainnet.infura.io/ws/v3/invalid";
-        let web3s = HttpBuilder::new(ws_url.to_string()).build();
-
-        let gas_price = get_eth_gasprice(&web3s).await.unwrap_err();
-        let transport_error_expected_message = TransportError::Message("failed to send request: builder error for url (wss://mainnet.infura.io/ws/v3/invalid): URL scheme is not allowed".to_string());
-        let expected_error: Error = Error::Transport(transport_error_expected_message.clone());
-       
-        match gas_price {
+        let invalid_ws_url = "wss://mainnet.infura.io/ws/v3/invalid".to_string();
+        let web3s = WebSocketBuilder::new(invalid_ws_url).build().await.unwrap_err();
+        
+        let transport_error_expected_code = TransportError::Code(401);
+        match web3s {
             Error::Transport(transport_error) => {
-                assert_eq!(transport_error_expected_message, transport_error);
+                assert_eq!(transport_error, transport_error_expected_code);
             }
-            _ => panic!("Expected Error::Transport"),
+            _ => unreachable!()
         }
-
-
-        assert!(matches!(expected_error, gas_price)); // TODO: check this line
     }
 }
