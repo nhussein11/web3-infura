@@ -16,7 +16,7 @@ mod tests {
         dotenv::dotenv().ok();
         let api_key = &env::var("INFURA_API_KEY").unwrap();
         let http_url = format!("{}{}", ETH_HTTP_URL, api_key);
-        let web3s = HttpBuilder::new(http_url).build();
+        let web3s = HttpBuilder::new(http_url).build().unwrap();
         let eth_balance = get_eth_balance(&web3s, &address).await.unwrap();
 
         // The current balance of the address (at the time of writing this test) is 33 ETH
@@ -30,7 +30,7 @@ mod tests {
         dotenv::dotenv().ok();
         let api_key = &env::var("INFURA_API_KEY").unwrap();
         let http_url = format!("{}{}", ETH_HTTP_URL, api_key);
-        let web3s = HttpBuilder::new(http_url).build();
+        let web3s = HttpBuilder::new(http_url).build().unwrap();
 
         let eth_balance = get_eth_balance(&web3s, &address).await.unwrap_err();
         let expected_error_message: String = "Invalid account address".to_string();
@@ -68,7 +68,7 @@ mod tests {
         dotenv::dotenv().ok();
         let api_key = &env::var("INFURA_API_KEY").unwrap();
         let http_url = format!("{}{}", ETH_HTTP_URL, api_key);
-        let web3s = HttpBuilder::new(http_url).build();
+        let web3s = HttpBuilder::new(http_url).build().unwrap();
 
         let block_number = get_eth_blocknumber(&web3s).await.unwrap();
         // The current block number (at the time of writing this test) is 16.734.004
@@ -81,7 +81,7 @@ mod tests {
         dotenv::dotenv().ok();
         let api_key = &env::var("INFURA_API_KEY").unwrap();
         let http_url = format!("{}{}", ETH_HTTP_URL, api_key);
-        let web3s = HttpBuilder::new(http_url).build();
+        let web3s = HttpBuilder::new(http_url).build().unwrap();
 
         let gas_price = get_eth_gasprice(&web3s).await.unwrap();
 
@@ -93,7 +93,7 @@ mod tests {
     #[tokio::test]
     async fn try_to_build_connection_with_invalid_http_url() {
         let invalid_http_url = "https://mainnet.infura.io/v3/invalid".to_string();
-        let web3s = HttpBuilder::new(invalid_http_url).build();
+        let web3s = HttpBuilder::new(invalid_http_url).build().unwrap();
 
         let gas_price = get_eth_gasprice(&web3s).await.unwrap_err();
         let transport_error_expected_code = TransportError::Code(401);
