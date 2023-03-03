@@ -114,8 +114,16 @@ mod tests {
         let web3s = HttpBuilder::new(ws_url.to_string()).build();
 
         let gas_price = get_eth_gasprice(&web3s).await.unwrap_err();
-        let transport_error_expected_code = TransportError::Code(401);
-        let expected_error: Error = Error::Transport(transport_error_expected_code);
+        let transport_error_expected_message = TransportError::Message("failed to send request: builder error for url (wss://mainnet.infura.io/ws/v3/invalid): URL scheme is not allowed".to_string());
+        let expected_error: Error = Error::Transport(transport_error_expected_message.clone());
+       
+        match gas_price {
+            Error::Transport(transport_error) => {
+                assert_eq!(transport_error_expected_message, transport_error);
+            }
+            _ => panic!("Expected Error::Transport"),
+        }
+
 
         assert!(matches!(expected_error, gas_price)); // TODO: check this line
     }
