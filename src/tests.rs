@@ -24,7 +24,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn try_to_get_ethereum_balance_with_invalid_balance() {
+    async fn try_to_get_ethereum_balance_with_invalid_address() {
         let address = "invalid address";
 
         dotenv::dotenv().ok();
@@ -40,11 +40,26 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn try_to_get_ethereum_balance_with_invalid_url() {
+    async fn try_to_get_ethereum_balance_with_invalid_url_http() {
         let address = "0x71C7656EC7ab88b098defB751B7401B5f6d8976F";
 
         let http_url = "https://mainnet.infura.io/v3/invalid";
         let web3s = HttpBuilder::new(http_url.to_string()).build();
+
+        let eth_balance = get_eth_balance(&web3s, &address).await.unwrap_err();
+
+        let transport_error_expected_code = TransportError::Code(401);
+        let expected_error: Error = Error::Transport(transport_error_expected_code);
+
+        assert!(matches!(expected_error, eth_balance)); // TODO: check this line
+    }
+
+    #[tokio::test]
+    async fn try_to_get_ethereum_balance_with_invalid_url_ws() {
+        let address = "0x71C7656EC7ab88b098defB751B7401B5f6d8976F";
+
+        let ws_url = "wss://mainnet.infura.io/ws/v3/invalid";
+        let web3s = HttpBuilder::new(ws_url.to_string()).build();
 
         let eth_balance = get_eth_balance(&web3s, &address).await.unwrap_err();
 
@@ -68,18 +83,6 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn try_to_get_ethereum_block_number_with_invalid_url() {
-        let http_url = "https://mainnet.infura.io/v3/invalid";
-        let web3s = HttpBuilder::new(http_url.to_string()).build();
-
-        let block_number = get_eth_blocknumber(&web3s).await.unwrap_err();
-        let transport_error_expected_code = TransportError::Code(401);
-        let expected_error: Error = Error::Transport(transport_error_expected_code);
-
-        assert!(matches!(expected_error, block_number)); // TODO: check this line
-    }
-
-    #[tokio::test]
     async fn get_ethereum_gas_price() {
         dotenv::dotenv().ok();
         let api_key = &env::var("INFURA_API_KEY").unwrap();
@@ -94,9 +97,21 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn try_to_get_ethereum_gas_price_with_invalid_url() {
+    async fn try_to_get_ethereum_gas_price_with_invalid_url_http() {
         let http_url = "https://mainnet.infura.io/v3/invalid";
         let web3s = HttpBuilder::new(http_url.to_string()).build();
+
+        let gas_price = get_eth_gasprice(&web3s).await.unwrap_err();
+        let transport_error_expected_code = TransportError::Code(401);
+        let expected_error: Error = Error::Transport(transport_error_expected_code);
+
+        assert!(matches!(expected_error, gas_price)); // TODO: check this line
+    }
+
+    #[tokio::test]
+    async fn try_to_get_ethereum_gas_price_with_invalid_url_ws() {
+        let ws_url = "wss://mainnet.infura.io/ws/v3/invalid";
+        let web3s = HttpBuilder::new(ws_url.to_string()).build();
 
         let gas_price = get_eth_gasprice(&web3s).await.unwrap_err();
         let transport_error_expected_code = TransportError::Code(401);
