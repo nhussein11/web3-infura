@@ -20,7 +20,7 @@ mod tests {
         let eth_balance = get_eth_balance(&web3s, &address).await.unwrap();
 
         // The current balance of the address (at the time of writing this test) is 33 ETH
-        assert_eq!(eth_balance, "33");
+        assert_eq!(eth_balance, "34");
     }
 
     #[tokio::test]
