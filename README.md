@@ -16,9 +16,9 @@ The main reason is that I wanted to learn more about Rust and I thought that cre
 
 ### What's next? :100:
 
-If I have more time, I will add more features to this project. My idea is to use the CLI to get information not only about the Ethereum blockchain but also about other blockchains available on Infura, that's why I separated the project into different modules, so it will be easier to add more features. For example, I want to add a module that will allow me to get information about the Near blockchain, so I will create a new module called `near` and I will add the necessary code to get information about the Near blockchain there.
+If I have more time, I will add more features to this project. My idea is to use the CLI to get information not only about the Ethereum blockchain but also about other blockchains available on Infura, that's why I separated the project into different modules, so it will be easier to add more features tn the future hypothetically. For instance, if I want to add a module that to get information about NEAR blockchain, probably I will create a new module called `near` and there I would add the necessary code to get the desired data.
 
-Having that in mind, **_if you want to contribute to this project, you are more than welcome_**. You can add more features to the CLI or you can suggest some ideas for new features.
+Having that in mind, **_if you want to contribute to this project, obviously you are more than welcome_**. Feel free to add more features to the CLI or suggest some ideas for new features.
 
 ## How to run :runner:
 
